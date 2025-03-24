@@ -1,7 +1,20 @@
 {
   "dependencies": {
+    "com.company.coresystems": {
+      "version": "file:com.company.coresystems",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.cysharp.unitask": {
       "version": "2.5.10",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
+    "com.github-glitchenzo.nugetforunity": {
+      "version": "4.3.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
