@@ -10,10 +10,6 @@ namespace SaveLoad
     {
         private static readonly string FilePath = Path.Combine(Application.persistentDataPath, "save.json");
 
-        public SaveSystem()
-        {
-        }
-
         public async UniTask SaveAsync<T>(T data, CancellationToken cancellationToken)
         {
             if (data == null)

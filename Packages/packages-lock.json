@@ -1,9 +1,9 @@
 {
   "dependencies": {
     "com.company.coresystems": {
-      "version": "file:com.company.coresystems",
+      "version": "file:../com.company.coresystems",
       "depth": 0,
-      "source": "embedded",
+      "source": "local",
       "dependencies": {}
     },
     "com.cysharp.unitask": {
