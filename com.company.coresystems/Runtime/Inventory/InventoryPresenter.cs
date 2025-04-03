@@ -24,15 +24,12 @@ namespace Inventory
         public void Initialize()
         {
             Model.OnDataLoading += View.OnDataLoading;
-            Model.OnDataLoaded += HandleInventoryDataLoadedAsync;
+            Model.OnDataLoaded += HandleInventoryDataLoaded;
 
-            UniTask.Create(async token => 
-            { 
-                await Model.LoadInventoryAsync(token); 
-            }, _cancellationToken).Forget();
+            UniTask.Create(async token => { await Model.LoadInventoryAsync(token); }, _cancellationToken).Forget();
         }
-        
-        private async UniTask HandleInventoryDataLoadedAsync(IEnumerable<InventoryItem> items)
+
+        private void HandleInventoryDataLoaded(IEnumerable<InventoryItem> items)
         {
             var spriteLoadTasks = items
                 .Select(item => LoadSpriteForInventoryItemAsync(item, _cancellationToken))
@@ -40,18 +37,15 @@ namespace Inventory
                 .Select(task => task!.Value)
                 .ToList();
 
-            try
+            UniTask.Create(async () =>
             {
                 var sprites = await UniTask.WhenAll(spriteLoadTasks);
                 View.OnDataLoaded(items, sprites);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Error loading inventory sprites: {ex.Message}");
-            }
+            }).Forget();
         }
 
-        private UniTask<Sprite>? LoadSpriteForInventoryItemAsync(InventoryItem item, CancellationToken cancellationToken)
+        private UniTask<Sprite>? LoadSpriteForInventoryItemAsync(InventoryItem item,
+            CancellationToken cancellationToken)
         {
             var handle = Addressables.LoadAssetAsync<Sprite>(item.SpritePath);
 
@@ -80,11 +74,11 @@ namespace Inventory
         public override void Dispose()
         {
             Model.OnDataLoading -= View.OnDataLoading;
-            Model.OnDataLoaded -= HandleInventoryDataLoadedAsync;
-            
+            Model.OnDataLoaded -= HandleInventoryDataLoaded;
+
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource.Dispose();
-            
+
             base.Dispose();
         }
     }
